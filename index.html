@@ -1,0 +1,2891 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LCS Lab｜LCS 與 UVa 531 互動教學</title>
+
+<style>
+:root {
+    --bg: #f3f6f9;
+    --ink: #142331;
+    --muted: #566979;
+    --line: #dbe4ec;
+    --green: #167454;
+    --mint: #76ebba;
+    --orange: #c76723;
+    --blue: #285dd3;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 85px;
+}
+
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, "Microsoft JhengHei", sans-serif;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
+}
+
+button:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+button,
+input,
+textarea,
+select,
+a {
+    outline-offset: 4px;
+}
+
+a {
+    color: var(--green);
+}
+
+header {
+    background: var(--ink);
+    color: white;
+    padding: 42px 24px;
+}
+
+.header-inner,
+main,
+.nav-inner {
+    max-width: 1180px;
+    margin: auto;
+}
+
+.eyebrow {
+    color: var(--mint);
+    letter-spacing: 3px;
+    font-size: 14px;
+    font-family: Consolas, monospace;
+}
+
+h1 {
+    margin: 12px 0 16px;
+    font-size: clamp(32px, 5vw, 52px);
+    line-height: 1.25;
+}
+
+header p {
+    max-width: 780px;
+    color: #c9d8e2;
+}
+
+nav {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: white;
+    border-bottom: 1px solid var(--line);
+}
+
+.nav-inner {
+    display: flex;
+    gap: 8px;
+    padding: 12px 18px;
+    overflow-x: auto;
+}
+
+nav a {
+    flex-shrink: 0;
+    color: var(--ink);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+nav a:hover {
+    background: #e9f5ee;
+}
+
+main {
+    padding: 0 22px;
+}
+
+section {
+    padding: 36px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+h2 {
+    font-size: 28px;
+    margin: 0 0 12px;
+}
+
+h3 {
+    font-size: 19px;
+    margin: 0 0 12px;
+}
+
+p {
+    margin: 0 0 15px;
+}
+
+.section-no {
+    color: var(--green);
+    font-family: Consolas, monospace;
+    font-size: 15px;
+    letter-spacing: 2px;
+}
+
+.subtitle,
+.small {
+    color: var(--muted);
+}
+
+.small {
+    font-size: 14px;
+}
+
+.grid2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.card {
+    background: white;
+    border: 1px solid var(--line);
+    padding: 24px;
+    border-radius: 12px;
+}
+
+.card p:last-child {
+    margin-bottom: 0;
+}
+
+code {
+    background: #eaf0f4;
+    border-radius: 4px;
+    padding: 2px 5px;
+    font-family: Consolas, monospace;
+}
+
+pre {
+    font-family: Consolas, monospace;
+    white-space: pre;
+    overflow-x: auto;
+}
+
+.note {
+    margin-top: 20px;
+    padding: 16px 20px;
+    border-left: 4px solid var(--green);
+    background: #e6f5ed;
+    border-radius: 0 8px 8px 0;
+}
+
+.note.orange {
+    background: #fff0e4;
+    border-color: var(--orange);
+}
+
+.formula {
+    margin: 0;
+    padding: 22px;
+    background: var(--ink);
+    color: var(--mint);
+    border-radius: 10px;
+    line-height: 2;
+    font-size: 15px;
+}
+
+.tokens {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 10px 0;
+}
+
+.token {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    padding: 4px 9px;
+    background: #eef2f6;
+    border: 1px solid var(--line);
+    border-radius: 5px;
+    font-family: Consolas, monospace;
+    font-size: 15px;
+}
+
+.token.selected {
+    color: #0c5537;
+    background: #c6efd9;
+    border-color: var(--green);
+}
+
+.token.comparing {
+    outline: 2px solid var(--orange);
+    outline-offset: 1px;
+}
+
+.token.skipped {
+    opacity: 0.4;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+input[type="text"],
+textarea,
+select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #b8c9d7;
+    border-radius: 7px;
+    background: white;
+    color: var(--ink);
+}
+
+textarea {
+    resize: vertical;
+    font-family: Consolas, monospace;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+input[type="range"] {
+    width: 100%;
+    accent-color: var(--green);
+}
+
+.btn {
+    border: 1px solid #b8c9d7;
+    border-radius: 7px;
+    background: white;
+    color: var(--ink);
+    padding: 8px 13px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.btn:hover:enabled {
+    background: #edf3f7;
+}
+
+.btn.primary {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: white;
+}
+
+.btn.green {
+    background: var(--green);
+    border-color: var(--green);
+    color: white;
+}
+
+.btn.primary:hover:enabled {
+    background: #2b4353;
+}
+
+.btn.green:hover:enabled {
+    background: #0c6246;
+}
+
+.toolbar {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.toolbar select {
+    width: auto;
+    max-width: 100%;
+    font-size: 14px;
+    padding: 7px 10px;
+}
+
+.error {
+    color: #ad3725;
+    font-size: 14px;
+    margin-top: 12px;
+}
+
+.lab {
+    margin-top: 22px;
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.lab-head {
+    padding: 22px;
+    background: #f9fffc;
+    border-bottom: 1px solid var(--line);
+}
+
+.lab-head .toolbar {
+    margin-top: 14px;
+}
+
+.lab-head .presets {
+    margin-top: 12px;
+}
+
+.lab-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 290px;
+}
+
+.matrix-panel {
+    min-width: 0;
+    padding: 22px;
+}
+
+.sequence-row {
+    display: grid;
+    grid-template-columns: 25px 1fr;
+    gap: 8px;
+    align-items: start;
+}
+
+.sequence-row strong {
+    padding-top: 13px;
+    font-family: Consolas, monospace;
+}
+
+.table-scroll {
+    overflow: auto;
+    max-height: 440px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.dp-table {
+    width: 100%;
+    border-spacing: 0;
+    font-family: Consolas, monospace;
+    text-align: center;
+    font-size: 14px;
+}
+
+.dp-table caption {
+    padding: 8px;
+    text-align: left;
+    font-family: system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.dp-table th {
+    min-width: 42px;
+    padding: 8px;
+    background: #eaf0f5;
+    white-space: nowrap;
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+}
+
+.dp-table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+}
+
+.dp-table tbody th {
+    position: sticky;
+    left: 0;
+    z-index: 2;
+}
+
+.dp-table td {
+    min-width: 42px;
+    height: 40px;
+    border-right: 1px solid #e6edf3;
+    border-bottom: 1px solid #e6edf3;
+    transition: background 0.15s;
+}
+
+.dp-table td.pending {
+    background: #f5f7fa;
+    color: #8a9ba8;
+}
+
+.dp-table td.base {
+    background: #edf2f6;
+    color: #647887;
+}
+
+.dp-table td.source {
+    background: #e0ebff;
+    outline: 2px solid var(--blue);
+    outline-offset: -2px;
+}
+
+.dp-table td.path {
+    background: #e1f5e9;
+}
+
+.dp-table td.match {
+    background: #bceacf;
+    color: #0d5536;
+    font-weight: bold;
+}
+
+.dp-table td.current {
+    background: #ffedda;
+    color: #87420e;
+    outline: 3px solid var(--orange);
+    outline-offset: -3px;
+    font-weight: bold;
+}
+
+.dp-table td button {
+    width: 100%;
+    height: 100%;
+    padding: 6px;
+    border: none;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+}
+
+.legend {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.legend span::before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 5px;
+    border: 1px solid #9aabb8;
+}
+
+.legend .current-mark::before {
+    background: #ffedda;
+    border-color: var(--orange);
+}
+
+.legend .source-mark::before {
+    background: #e0ebff;
+    border-color: var(--blue);
+}
+
+.legend .path-mark::before {
+    background: #bceacf;
+    border-color: var(--green);
+}
+
+.inspector {
+    background: #f8fafc;
+    border-left: 1px solid var(--line);
+    padding: 22px;
+}
+
+.phase {
+    font-size: 13px;
+    color: var(--green);
+    font-family: Consolas, monospace;
+    font-weight: bold;
+}
+
+.inspect-title {
+    margin: 10px 0;
+    font-size: 22px;
+    font-family: Consolas, monospace;
+}
+
+.inspect-description {
+    font-size: 15px;
+    min-height: 95px;
+}
+
+.calculation {
+    background: #eaf0f5;
+    border-radius: 6px;
+    padding: 12px;
+    font-family: Consolas, monospace;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+.pseudocode {
+    margin-top: 14px;
+    font-size: 13px;
+    font-family: Consolas, monospace;
+}
+
+.pseudocode div {
+    padding: 5px 8px;
+    border-radius: 4px;
+}
+
+.pseudocode .active {
+    color: var(--mint);
+    background: var(--ink);
+}
+
+.answer-box {
+    border-top: 1px solid var(--line);
+    margin-top: 20px;
+    padding-top: 16px;
+}
+
+.answer-value {
+    color: var(--green);
+    font-family: Consolas, monospace;
+    font-size: 20px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+.controls {
+    border-top: 1px solid var(--line);
+    padding: 16px 22px;
+}
+
+.progress-row {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    padding: 0 22px 18px;
+}
+
+.progress-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+.progress-row output {
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    min-width: 80px;
+    text-align: right;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+.info-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    font-size: 15px;
+}
+
+.info-table th,
+.info-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+}
+
+.info-table th {
+    background: #eaf0f5;
+}
+
+.metric-row {
+    display: flex;
+    gap: 28px;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.metric strong {
+    display: block;
+    color: var(--green);
+    font-size: 30px;
+    font-family: Consolas, monospace;
+}
+
+.metric span {
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.output {
+    background: var(--ink);
+    color: var(--mint);
+    padding: 18px;
+    min-height: 120px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    border-radius: 8px;
+    font-size: 15px;
+}
+
+.code-panel {
+    background: var(--ink);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.code-toolbar {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 15px;
+    border-bottom: 1px solid #3a5060;
+}
+
+.code-toolbar button {
+    border: 1px solid #597284;
+    border-radius: 5px;
+    background: transparent;
+    color: white;
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+.code-toolbar button[aria-selected="true"] {
+    background: var(--mint);
+    border-color: var(--mint);
+    color: var(--ink);
+}
+
+.code-panel pre {
+    padding: 22px;
+    margin: 0;
+    color: #dce8f0;
+    font-size: 14px;
+    line-height: 1.7;
+    max-height: 600px;
+}
+
+.code-panel code {
+    padding: 0;
+    background: transparent;
+}
+
+details {
+    padding: 15px 0;
+    border-bottom: 1px solid var(--line);
+}
+
+summary {
+    cursor: pointer;
+    font-weight: 600;
+}
+
+details p {
+    margin: 12px 0 0;
+}
+
+.quiz-card {
+    background: white;
+    border: 1px solid var(--line);
+    border-radius: 9px;
+    padding: 20px;
+    margin-bottom: 15px;
+}
+
+.quiz-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin: 12px 0;
+}
+
+.feedback {
+    font-size: 14px;
+    color: var(--green);
+    min-height: 25px;
+}
+
+.feedback.wrong {
+    color: #ac452c;
+}
+
+.btn.correct {
+    background: #dcf5e8;
+    border: 2px solid var(--green);
+}
+
+footer {
+    padding: 28px 0 40px;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+footer a {
+    display: inline-block;
+    margin-right: 18px;
+}
+
+body.presentation {
+    font-size: 18px;
+}
+
+body.presentation main {
+    max-width: 1380px;
+}
+
+@media (max-width: 900px) {
+    .lab-body {
+        grid-template-columns: 1fr;
+    }
+
+    .inspector {
+        border-left: none;
+        border-top: 1px solid var(--line);
+    }
+
+    .inspect-description {
+        min-height: auto;
+    }
+
+    .grid3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 650px) {
+    .grid2 {
+        grid-template-columns: 1fr;
+    }
+
+    main {
+        padding: 0 15px;
+    }
+
+    header {
+        padding: 30px 20px;
+    }
+
+    h2 {
+        font-size: 24px;
+    }
+
+    .card,
+    .lab-head,
+    .matrix-panel,
+    .inspector {
+        padding: 18px;
+    }
+
+    .controls {
+        padding: 15px;
+    }
+
+    .controls .btn {
+        padding: 7px 10px;
+    }
+
+    .table-scroll {
+        max-height: 360px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    * {
+        transition: none !important;
+    }
+}
+
+@media print {
+    nav,
+    button,
+    .controls,
+    .progress-row,
+    .toolbar {
+        display: none;
+    }
+
+    body {
+        background: white;
+    }
+
+    header {
+        color: black;
+        background: white;
+    }
+
+    header p {
+        color: black;
+    }
+
+    .code-panel,
+    .formula,
+    .output {
+        background: #eee;
+        color: black;
+    }
+
+    .code-panel pre {
+        color: black;
+        max-height: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="eyebrow">LONGEST COMMON SUBSEQUENCE</div>
+        <h1>LCS：找出共同的順序</h1>
+
+        <p>
+            從最長共同子序列的概念開始，
+            逐格建立 DP 表，再沿著路徑找回答案。
+            最後把比較單位從字元換成單字，解開 UVa 531。
+        </p>
+
+        <button class="btn" id="presentation-button" aria-pressed="false">
+            簡報模式
+        </button>
+    </div>
+</header>
+
+<nav aria-label="教學章節">
+    <div class="nav-inner">
+        <a href="#intro">01 概念</a>
+        <a href="#dp">02 DP 邏輯</a>
+        <a href="#lcs-animation">03 LCS 動畫</a>
+        <a href="#complexity">04 複雜度</a>
+        <a href="#uva">05 UVa 531</a>
+        <a href="#code">06 程式與延伸</a>
+        <a href="#practice">07 練習</a>
+    </div>
+</nav>
+
+<main>
+
+<section id="intro">
+    <div class="section-no">01 / CONCEPT</div>
+    <h2>LCS 是什麼？</h2>
+
+    <p class="subtitle">
+        LCS 全名是 Longest Common Subsequence，
+        中文為「最長共同子序列」。
+    </p>
+
+    <div class="grid2">
+        <div class="card">
+            <h3>子序列：可以跳過，不能改變順序</h3>
+
+            <p>
+                在 <code>ABCBDAB</code> 中，
+                挑選第 2、3、4、6 個字元，可以得到
+                <code>BCBA</code>。
+            </p>
+
+            <div class="tokens">
+                <span class="token skipped">A</span>
+                <span class="token selected">B</span>
+                <span class="token selected">C</span>
+                <span class="token selected">B</span>
+                <span class="token skipped">D</span>
+                <span class="token selected">A</span>
+                <span class="token skipped">B</span>
+            </div>
+
+            <p>
+                若一個序列能按照相同順序出現在 A、B 中，
+                它就是共同子序列。
+                其中長度最長的，就是 LCS。
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>Subsequence 不等於 Substring</h3>
+
+            <p>
+                <strong>子序列</strong>不要求連續；
+                <strong>子字串</strong>必須連續。
+            </p>
+
+            <p>
+                例如 <code>ABC</code> 與 <code>AC</code>：
+                LCS 為 <code>AC</code>，長度 2；
+                最長共同子字串則只有 <code>A</code>
+                或 <code>C</code>，長度 1。
+            </p>
+
+            <p class="small">
+                LCS 也不是集合交集。AB 與 BA 都有 A、B，
+                但順序不同，所以 LCS 長度只有 1。
+            </p>
+        </div>
+    </div>
+
+    <div class="note">
+        <strong>答案可能不只一個。</strong>
+        ABCBDAB 與 BDCABA 的 LCS 長度為 4；
+        BCBA、BDAB、BCAB 都是有效答案。
+    </div>
+</section>
+
+<section id="dp">
+    <div class="section-no">02 / DYNAMIC PROGRAMMING</div>
+    <h2>用動態規劃解 LCS</h2>
+
+    <div class="grid2">
+        <div class="card">
+            <h3>先定義狀態</h3>
+
+            <p>
+                <code>dp[i][j]</code>：
+                A 的前 i 個元素，
+                與 B 的前 j 個元素的 LCS 長度。
+            </p>
+
+            <p>
+                i、j 代表「個數」，
+                對應最後元素的陣列索引為
+                <code>A[i-1]</code>、<code>B[j-1]</code>。
+            </p>
+
+            <p>
+                表格需要多一列、一欄，
+                表示空序列，因此大小為
+                <code>(n+1) × (m+1)</code>。
+            </p>
+        </div>
+
+        <pre class="formula">邊界：
+dp[0][j] = 0
+dp[i][0] = 0
+
+若 A[i-1] == B[j-1]：
+dp[i][j] = dp[i-1][j-1] + 1
+
+否則：
+dp[i][j] = max(
+    dp[i-1][j],
+    dp[i][j-1]
+)</pre>
+    </div>
+
+    <div class="grid3" style="margin-top:20px">
+        <div class="card">
+            <h3>① 相同：左上角 + 1</h3>
+            <p>
+                可以把這對相同元素接在較短前綴的最佳答案後面，
+                所以長度增加 1。
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>② 不同：上方與左方取大</h3>
+            <p>
+                分別考慮不使用 A 的最後元素，
+                或不使用 B 的最後元素，
+                保留較長的結果。
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>③ 由上到下、由左到右</h3>
+            <p>
+                每格只需要左上、上、左的結果。
+                依此順序填表，相依狀態都會先完成。
+            </p>
+        </div>
+    </div>
+
+    <details>
+        <summary>為什麼這樣能保證得到最長答案？</summary>
+        <p>
+            若最後元素相同，可以取一個包含這對末尾元素的最優解；
+            移除最後配對後，剩下的是較短前綴的最優解。
+        </p>
+        <p>
+            若最後元素不同，任何共同子序列至少不使用其中一個末尾元素。
+            因此答案一定落在「去掉 A 末尾」或「去掉 B 末尾」
+            這兩類問題之中，取兩者最佳長度的最大值即可。
+        </p>
+        <p>
+            這是<strong>最優子結構</strong>；
+            遞迴分支會重複遇到相同的前綴，
+            則是<strong>重疊子問題</strong>。
+        </p>
+    </details>
+</section>
+
+<section id="lcs-animation">
+    <div class="section-no">03 / ANIMATION</div>
+    <h2>LCS 填表與回溯動畫</h2>
+
+    <p class="subtitle">
+        請按「下一步」觀察每格計算。
+        填表完成後，動畫會從右下角回溯，最後反轉答案。
+    </p>
+
+    <div id="character-lab"></div>
+
+    <div class="note">
+        <strong>回溯規則：</strong>
+        元素相同，選入答案並走左上；
+        不同則走向上方或左方較大的 DP 值。
+        若相同大，可任選一邊。
+        因為答案由末尾往前收集，最後需要 reverse。
+    </div>
+</section>
+
+<section id="complexity">
+    <div class="section-no">04 / COMPLEXITY</div>
+    <h2>時間與空間複雜度</h2>
+
+    <div class="grid2">
+        <div class="card">
+            <h3>為什麼是 O(nm)？</h3>
+
+            <p>
+                A 有 n 個元素，B 有 m 個元素；
+                非邊界狀態共有 n × m 格。
+                字元比較與取最大值可視為常數時間，
+                所以填表時間為 <strong>Θ(nm)</strong>。
+            </p>
+
+            <p>
+                回溯每一步至少讓 i 或 j 減 1，
+                最多走 n+m 步，因此為 <strong>O(n+m)</strong>。
+            </p>
+
+            <p>
+                完整 DP 表占
+                <strong>Θ((n+1)(m+1))</strong> 空間，
+                通常簡寫為 O(nm)。
+            </p>
+
+            <p class="small">
+                UVa 531 比較單字。
+                若最大單字長度為 L，直接比較字串的嚴格上界為 O(nmL)。
+                題目限制 L &lt; 30，通常視為常數。
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>調整長度，看計算量</h3>
+
+            <label for="size-n">
+                A 長度 n：<output id="n-value">40</output>
+            </label>
+            <input id="size-n" type="range"
+                   min="1" max="1000" value="40">
+
+            <label for="size-m">
+                B 長度 m：<output id="m-value">60</output>
+            </label>
+            <input id="size-m" type="range"
+                   min="1" max="1000" value="60">
+
+            <div class="metric-row">
+                <div class="metric">
+                    <strong id="state-count">2,400</strong>
+                    <span>非邊界狀態</span>
+                </div>
+
+                <div class="metric">
+                    <strong id="memory-size">9.8</strong>
+                    <span>KiB / 32-bit 整數表</span>
+                </div>
+            </div>
+
+            <p class="small" style="margin-top:15px">
+                估計空間 = (n+1)(m+1) × 4 bytes。
+                不含容器開銷，也不代表 Python 整數的實際占用。
+            </p>
+        </div>
+    </div>
+
+    <div class="table-wrapper" style="margin-top:22px">
+        <table class="info-table">
+            <thead>
+                <tr>
+                    <th>方法</th>
+                    <th>時間</th>
+                    <th>額外空間</th>
+                    <th>特性</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>直接遞迴</td>
+                    <td>O(2<sup>n+m</sup>) 上界</td>
+                    <td>O(n+m) 堆疊</td>
+                    <td>重複計算很多子問題</td>
+                </tr>
+                <tr>
+                    <td>記憶化遞迴</td>
+                    <td>O(nm)</td>
+                    <td>O(nm) 表與 O(n+m) 堆疊</td>
+                    <td>每個狀態最多算一次</td>
+                </tr>
+                <tr>
+                    <td>二維 DP＋回溯</td>
+                    <td>O(nm+n+m)</td>
+                    <td>O(nm+n+m)</td>
+                    <td>能取得實際序列</td>
+                </tr>
+                <tr>
+                    <td>滾動陣列</td>
+                    <td>O(nm)</td>
+                    <td>O(min(n,m))</td>
+                    <td>只求長度時適用</td>
+                </tr>
+                <tr>
+                    <td>Hirschberg</td>
+                    <td>O(nm)</td>
+                    <td>O(min(n,m)) 工作空間*</td>
+                    <td>低記憶體還原序列</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <p class="small" style="margin-top:12px">
+        * Hirschberg 的工作空間慣例不計輸入、輸出；
+        遞迴堆疊另有 O(log(max(n,m))) 開銷。
+    </p>
+</section>
+
+<section id="uva">
+    <div class="section-no">05 / UVA 531</div>
+    <h2>Compromise：共同的單字序列</h2>
+
+    <div class="grid2">
+        <div class="card">
+            <h3>題目要做什麼？</h3>
+
+            <p>
+                兩位政治人物各提出一份提案。
+                找出兩份文字中，順序相同、長度最長的共同單字序列。
+            </p>
+
+            <p>
+                這就是 LCS。
+                差別只是比較單位從「字元」變成「單字」。
+            </p>
+
+            <ol>
+                <li>讀入第一份文字，直到 #。</li>
+                <li>讀入第二份文字，直到 #。</li>
+                <li>以完整單字建立 LCS 長度表。</li>
+                <li>回溯取得單字，反轉後輸出。</li>
+                <li>重複處理，直到 EOF。</li>
+            </ol>
+        </div>
+
+        <div class="card">
+            <h3>輸入與輸出規則</h3>
+
+            <pre class="formula">第一份提案，可跨很多行
+#
+第二份提案，可跨很多行
+#
+下一組測資……
+EOF</pre>
+
+            <p class="small" style="margin-top:15px">
+                每份文字少於 100 個單字；
+                每個單字少於 30 字元；
+                單字為小寫、無標點。
+                官方保證至少有一個共同單字。
+            </p>
+
+            <p class="small">
+                每組輸出一行，單字間一個空白。
+                多個最優答案時，任一個皆可。
+            </p>
+        </div>
+    </div>
+
+    <div class="note orange">
+        <strong>容易搞錯：</strong>
+        每一份提案都需要一個 #，
+        因此一組測資共有兩個 #。
+        換行不代表提案結束。
+    </div>
+
+    <div class="card" style="margin-top:22px">
+        <div class="grid2">
+            <div>
+                <h3>實際執行測資</h3>
+
+                <label for="uva-input">
+                    每份文字以單獨一行 # 結束
+                </label>
+
+                <textarea id="uva-input" rows="11"
+                          spellcheck="false"></textarea>
+
+                <div class="toolbar" style="margin-top:12px">
+                    <button class="btn green" id="run-uva">執行解題</button>
+                    <button class="btn" id="short-sample">短範例</button>
+                    <button class="btn" id="official-sample">官方範例</button>
+                    <button class="btn" id="multi-sample">多組測資</button>
+                </div>
+
+                <p class="error" id="uva-error" role="alert"></p>
+            </div>
+
+            <div>
+                <h3>輸出結果</h3>
+                <pre id="uva-output" class="output"
+                     aria-live="polite"></pre>
+
+                <p class="small" id="uva-meta"></p>
+
+                <div class="toolbar">
+                    <label for="case-select">動畫測資</label>
+                    <select id="case-select"></select>
+                    <button class="btn" id="load-word-animation">
+                        載入動畫
+                    </button>
+                </div>
+
+                <p class="small" style="margin-top:14px">
+                    解題器支援官方每份最多 99 個單字。
+                    為方便觀看，動畫每份最多顯示 32 個單字。
+                    修改輸入後，請先重新執行。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="word-lab"></div>
+</section>
+
+<section id="code">
+    <div class="section-no">06 / CODE & EXTENSIONS</div>
+    <h2>把動畫轉成程式</h2>
+
+    <p class="subtitle">
+        C++17 與 Python 3 都會讀取多組測資，
+        並輸出實際的共同單字序列。
+    </p>
+
+    <div class="code-panel">
+        <div class="code-toolbar">
+            <div role="tablist" aria-label="程式語言">
+                <button id="cpp-tab" role="tab"
+                        aria-selected="true"
+                        aria-controls="code-content">C++17</button>
+
+                <button id="python-tab" role="tab"
+                        aria-selected="false"
+                        aria-controls="code-content">Python 3</button>
+            </div>
+
+            <div>
+                <button id="copy-code">複製程式</button>
+                <button id="download-code">下載程式</button>
+            </div>
+        </div>
+
+        <pre id="code-content" role="tabpanel"
+             aria-labelledby="cpp-tab"><code id="source-code"></code></pre>
+    </div>
+
+    <p id="copy-status" class="small"
+       role="status" style="margin-top:10px"></p>
+
+    <div class="grid2" style="margin-top:22px">
+        <div class="card">
+            <h3>延伸一：滾動陣列</h3>
+
+            <p>
+                目前這列只依賴上一列，
+                以及本列左邊的結果。
+                所以只求長度時，可以保留兩列，
+                將空間降為 O(min(n,m))。
+            </p>
+
+            <p>
+                但 UVa 531 要輸出單字。
+                舊資料被覆蓋後，不能直接沿完整表格回溯。
+                想兼顧低記憶體與實際序列，可進一步學 Hirschberg。
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>延伸二：最少插入與刪除</h3>
+
+            <p>
+                若 LCS 長度為 ℓ，
+                將 A 變成 B 的最少插入＋刪除次數為：
+            </p>
+
+            <pre class="formula">n + m − 2ℓ</pre>
+
+            <p style="margin-top:15px">
+                保留共同的 ℓ 個元素；
+                刪除 A 其餘部分，再插入 B 缺少的部分。
+            </p>
+
+            <p class="small">
+                此公式只適用插入與刪除。
+                若替換也算一次操作，就不能直接套用。
+            </p>
+        </div>
+    </div>
+
+    <details>
+        <summary>常見錯誤：直接貪心配第一個相同元素</summary>
+        <p>
+            A = ABC、B = BCA。
+            若先把 A 的第一個 A 配上 B 最後的 A，
+            後面無法再選，只得到長度 1。
+            但真正的 LCS 是 BC，長度 2。
+        </p>
+    </details>
+
+    <details>
+        <summary>常見錯誤：元素不同就把 DP 格子設為 0</summary>
+        <p>
+            這是最長共同子字串的一種轉移方式，因為它要求連續。
+            LCS 可以跳過，所以不同時應繼承上方或左方的最大值。
+        </p>
+    </details>
+
+    <details>
+        <summary>常見錯誤：只輸出 dp[n][m]</summary>
+        <p>
+            dp[n][m] 是長度，
+            UVa 531 要的是實際的單字序列。
+            必須回溯，收集單字，再反轉輸出。
+        </p>
+    </details>
+
+    <details>
+        <summary>常見錯誤：認為答案一定與 Sample Output 完全相同</summary>
+        <p>
+            當上方與左方的值相同，選不同方向可能得到不同答案。
+            只要是合法的最長共同單字序列，
+            UVa 531 就允許。
+            本頁預設平手優先向上。
+        </p>
+    </details>
+</section>
+
+<section id="practice">
+    <div class="section-no">07 / PRACTICE</div>
+    <h2>觀念檢查</h2>
+
+    <div id="quiz"></div>
+
+    <div class="note">
+        <strong>報告順序：</strong>
+        子序列定義 → DP 狀態 → 兩種轉移 →
+        填表與回溯動畫 → 複雜度 →
+        UVa 531 輸入與單字 → 程式實作。
+    </div>
+</section>
+
+<footer>
+    <p>LCS Lab｜演算法互動教學</p>
+
+    <a href="https://onlinejudge.org/external/5/531.pdf"
+       target="_blank" rel="noopener">UVa 531 官方題目</a>
+
+    <a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-spring-2008/resources/lec20/"
+       target="_blank" rel="noopener">MIT LCS 教學</a>
+</footer>
+
+</main>
+
+<script>
+"use strict";
+
+/* =========================
+   工具函式
+========================= */
+
+const $ = selector => document.querySelector(selector);
+
+function escapeHTML(value) {
+    const map = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+    };
+
+    return String(value).replace(/[&<>"']/g, ch => map[ch]);
+}
+
+/* =========================
+   LCS 核心演算法
+   同時產生動畫事件
+========================= */
+
+function solveLCS(A, B, tie = "up") {
+    const n = A.length;
+    const m = B.length;
+
+    const dp = Array.from(
+        { length: n + 1 },
+        () => Array(m + 1).fill(0)
+    );
+
+    const events = [];
+
+    // 第一階段：填表
+    for (let i = 1; i <= n; i++) {
+        for (let j = 1; j <= m; j++) {
+            const same = A[i - 1] === B[j - 1];
+
+            if (same) {
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            } else {
+                dp[i][j] = Math.max(
+                    dp[i - 1][j],
+                    dp[i][j - 1]
+                );
+            }
+
+            events.push({
+                type: "fill",
+                i,
+                j,
+                same,
+                value: dp[i][j],
+                sources: same
+                    ? [[i - 1, j - 1]]
+                    : [[i - 1, j], [i, j - 1]]
+            });
+        }
+    }
+
+    const fillCount = events.length;
+
+    // 第二階段：回溯
+    let i = n;
+    let j = m;
+
+    const picked = [];
+    const pairs = [];
+
+    while (i > 0 && j > 0) {
+        const same = A[i - 1] === B[j - 1];
+        let direction;
+
+        if (same) {
+            direction = "diag";
+            picked.push(A[i - 1]);
+            pairs.push([i - 1, j - 1]);
+        } else if (dp[i - 1][j] > dp[i][j - 1]) {
+            direction = "up";
+        } else if (dp[i - 1][j] < dp[i][j - 1]) {
+            direction = "left";
+        } else {
+            direction = tie;
+        }
+
+        const nextI = i - (direction !== "left" ? 1 : 0);
+        const nextJ = j - (direction !== "up" ? 1 : 0);
+
+        events.push({
+            type: "trace",
+            i,
+            j,
+            same,
+            direction,
+            nextI,
+            nextJ,
+            tied: !same && dp[i - 1][j] === dp[i][j - 1],
+            picked: [...picked],
+            pairs: pairs.map(pair => [...pair])
+        });
+
+        i = nextI;
+        j = nextJ;
+    }
+
+    const answer = [...picked].reverse();
+
+    // 第三階段：反轉並顯示答案
+    events.push({
+        type: "done",
+        i,
+        j,
+        picked: [...picked],
+        pairs: pairs.map(pair => [...pair]),
+        answer
+    });
+
+    return {
+        dp,
+        events,
+        fillCount,
+        answer
+    };
+}
+
+/* =========================
+   動畫工作區
+========================= */
+
+class LCSAnimation {
+    constructor(containerID, mode, textA, textB) {
+        this.root = document.getElementById(containerID);
+        this.mode = mode;
+
+        this.timer = null;
+        this.position = 0;
+        this.speed = 600;
+        this.inspected = null;
+        this.dirty = false;
+
+        this.renderShell(textA, textB);
+
+        this.q = selector => this.root.querySelector(selector);
+
+        this.bindEvents();
+        this.build();
+    }
+
+    renderShell(textA, textB) {
+        const isCharacter = this.mode === "char";
+
+        this.root.innerHTML = `
+        <div class="lab">
+            <div class="lab-head">
+                <h3>
+                    ${isCharacter
+                        ? "字元 LCS：逐格填表與回溯"
+                        : "單字 LCS：UVa 531 解題動畫"}
+                </h3>
+
+                <div class="grid2">
+                    <label>
+                        序列 A
+                        <input type="text"
+                               data-input-a
+                               spellcheck="false"
+                               value="${escapeHTML(textA)}">
+                    </label>
+
+                    <label>
+                        序列 B
+                        <input type="text"
+                               data-input-b
+                               spellcheck="false"
+                               value="${escapeHTML(textB)}">
+                    </label>
+                </div>
+
+                <div class="toolbar">
+                    ${isCharacter ? `
+                    <label>
+                        比較單位
+                        <select data-mode>
+                            <option value="char">字元</option>
+                            <option value="word">單字</option>
+                        </select>
+                    </label>` : ""}
+
+                    <label>
+                        平手策略
+                        <select data-tie>
+                            <option value="up">優先向上</option>
+                            <option value="left">優先向左</option>
+                        </select>
+                    </label>
+
+                    <button class="btn green" data-build>
+                        套用輸入
+                    </button>
+
+                    <span class="small">可留空，觀察邊界。</span>
+                </div>
+
+                ${isCharacter ? `
+                <div class="toolbar presets">
+                    <button class="btn" data-preset="classic">
+                        經典範例
+                    </button>
+                    <button class="btn" data-preset="tie">
+                        多個答案
+                    </button>
+                    <button class="btn" data-preset="none">
+                        無共同元素
+                    </button>
+                    <button class="btn" data-preset="dna">
+                        DNA 序列
+                    </button>
+                </div>` : ""}
+
+                <p class="error" data-error role="alert"></p>
+            </div>
+
+            <div class="lab-body">
+                <div class="matrix-panel">
+                    <div class="sequence-row">
+                        <strong>A</strong>
+                        <div class="tokens" data-sequence-a></div>
+                    </div>
+
+                    <div class="sequence-row">
+                        <strong>B</strong>
+                        <div class="tokens" data-sequence-b></div>
+                    </div>
+
+                    <div class="table-scroll"
+                         tabindex="0"
+                         aria-label="DP 表格，可橫向及縱向捲動">
+                        <table class="dp-table" data-table></table>
+                    </div>
+
+                    <div class="legend">
+                        <span class="current-mark">目前格</span>
+                        <span class="source-mark">相依格</span>
+                        <span class="path-mark">回溯路徑</span>
+                        <span>· 尚未計算</span>
+                    </div>
+
+                    <p class="small" style="margin-top:10px">
+                        點擊已完成的格子，可以查看計算方式。
+                        字元模式的空格以 ␠ 顯示。
+                    </p>
+                </div>
+
+                <div class="inspector">
+                    <div class="phase" data-phase></div>
+                    <h4 class="inspect-title" data-title></h4>
+                    <p class="inspect-description" data-description></p>
+                    <div class="calculation" data-calculation></div>
+
+                    <div class="pseudocode">
+                        <div data-rule="init">① 邊界歸零</div>
+                        <div data-rule="same">② 相同：左上 + 1</div>
+                        <div data-rule="different">③ 不同：max(上, 左)</div>
+                        <div data-rule="trace">④ 回溯：選入或跳過</div>
+                        <div data-rule="done">⑤ reverse → 輸出</div>
+                    </div>
+
+                    <div class="answer-box">
+                        <div class="small" data-answer-label></div>
+                        <div class="answer-value" data-answer></div>
+                        <p class="small" data-length></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls toolbar">
+                <button class="btn primary" data-play>播放動畫</button>
+                <button class="btn" data-prev>上一步</button>
+                <button class="btn" data-next>下一步</button>
+                <button class="btn" data-fill-end>填表完成</button>
+                <button class="btn" data-end>查看答案</button>
+                <button class="btn" data-reset>重設</button>
+
+                <label>
+                    速度
+                    <select data-speed>
+                        <option value="1200">0.5×</option>
+                        <option value="600" selected>1×</option>
+                        <option value="300">2×</option>
+                        <option value="120">5×</option>
+                    </select>
+                </label>
+            </div>
+
+            <div class="progress-row">
+                <input type="range"
+                       data-progress
+                       min="0"
+                       value="0"
+                       aria-label="動畫進度">
+                <output data-progress-text></output>
+            </div>
+        </div>`;
+    }
+
+    bindEvents() {
+        this.q("[data-build]").onclick = () => this.build();
+
+        this.q("[data-tie]").onchange = () => this.build();
+
+        const modeSelect = this.q("[data-mode]");
+
+        if (modeSelect) {
+            modeSelect.onchange = () => {
+                this.mode = modeSelect.value;
+                this.build();
+            };
+        }
+
+        this.q("[data-play]").onclick = () => {
+            if (this.timer) {
+                this.pause();
+            } else {
+                this.play();
+            }
+        };
+
+        this.q("[data-prev]").onclick = () => {
+            this.go(this.position - 1);
+        };
+
+        this.q("[data-next]").onclick = () => {
+            this.go(this.position + 1);
+        };
+
+        this.q("[data-fill-end]").onclick = () => {
+            this.go(this.model.fillCount);
+        };
+
+        this.q("[data-end]").onclick = () => {
+            this.go(this.model.events.length);
+        };
+
+        this.q("[data-reset]").onclick = () => this.go(0);
+
+        this.q("[data-progress]").oninput = event => {
+            this.go(Number(event.target.value));
+        };
+
+        this.q("[data-speed]").onchange = event => {
+            this.speed = Number(event.target.value);
+
+            if (this.timer) {
+                this.pause();
+                this.play();
+            }
+        };
+
+        for (const input of this.root.querySelectorAll(
+            "[data-input-a], [data-input-b]"
+        )) {
+            input.oninput = () => {
+                this.pause();
+                this.dirty = true;
+
+                this.q("[data-error]").textContent =
+                    "輸入已修改，請按「套用輸入」更新動畫。";
+
+                this.updateControls();
+            };
+
+            input.onkeydown = event => {
+                if (event.key === "Enter") {
+                    this.build();
+                }
+            };
+        }
+
+        this.q("[data-table]").onclick = event => {
+            const button = event.target.closest("[data-cell]");
+
+            if (!button) return;
+
+            this.pause();
+
+            this.inspected = button.dataset.cell
+                .split(",")
+                .map(Number);
+
+            this.render();
+        };
+
+        const presets = {
+            classic: ["ABCBDAB", "BDCABA"],
+            tie: ["AB", "BA"],
+            none: ["ABC", "XYZ"],
+            dna: ["ACCGT", "ACGTC"]
+        };
+
+        for (const button of this.root.querySelectorAll("[data-preset]")) {
+            button.onclick = () => {
+                this.mode = "char";
+                this.q("[data-mode]").value = "char";
+                this.load(...presets[button.dataset.preset]);
+            };
+        }
+    }
+
+    tokenize(text) {
+        if (this.mode === "char") {
+            return Array.from(text);
+        }
+
+        const trimmed = text.trim();
+        return trimmed ? trimmed.split(/\s+/) : [];
+    }
+
+    load(textA, textB) {
+        this.q("[data-input-a]").value = textA;
+        this.q("[data-input-b]").value = textB;
+        this.build();
+    }
+
+    build() {
+        this.pause();
+
+        const A = this.tokenize(this.q("[data-input-a]").value);
+        const B = this.tokenize(this.q("[data-input-b]").value);
+
+        const limit = this.mode === "char" ? 24 : 32;
+        const unit = this.mode === "char" ? "字元" : "單字";
+
+        if (A.length > limit || B.length > limit) {
+            this.dirty = true;
+
+            this.q("[data-error]").textContent =
+                `動畫每份序列最多 ${limit} 個${unit}，請縮短後重新套用。`;
+
+            this.updateControls();
+            return;
+        }
+
+        this.A = A;
+        this.B = B;
+
+        this.model = solveLCS(
+            A,
+            B,
+            this.q("[data-tie]").value
+        );
+
+        this.position = 0;
+        this.inspected = null;
+        this.dirty = false;
+
+        this.q("[data-error]").textContent = "";
+        this.q("[data-progress]").max = this.model.events.length;
+
+        this.render();
+    }
+
+    pause() {
+        if (this.timer) {
+            clearInterval(this.timer);
+            this.timer = null;
+        }
+
+        this.q("[data-play]").textContent = "播放動畫";
+    }
+
+    play() {
+        if (this.dirty) return;
+
+        if (this.position === this.model.events.length) {
+            this.position = 0;
+        }
+
+        this.inspected = null;
+
+        this.timer = setInterval(() => {
+            this.position++;
+
+            this.render();
+
+            if (this.position >= this.model.events.length) {
+                this.pause();
+            }
+        }, this.speed);
+
+        this.q("[data-play]").textContent = "暫停動畫";
+        this.render();
+    }
+
+    go(position) {
+        if (this.dirty) return;
+
+        this.pause();
+        this.inspected = null;
+
+        this.position = Math.max(
+            0,
+            Math.min(position, this.model.events.length)
+        );
+
+        this.render();
+    }
+
+    formatSequence(sequence) {
+        if (sequence.length === 0) return "∅";
+
+        return sequence
+            .map(element => element === " " ? "␠" : element)
+            .join(this.mode === "char" ? "" : " ");
+    }
+
+    renderTokens(sequence, selected, currentIndex) {
+        if (sequence.length === 0) {
+            return '<span class="small">∅ 空序列</span>';
+        }
+
+        return sequence.map((element, index) => {
+            const classes = [
+                "token",
+                selected.has(index) ? "selected" : "",
+                index === currentIndex ? "comparing" : ""
+            ].join(" ");
+
+            const display = element === " " ? "␠" : element;
+
+            return `
+                <span class="${classes}" title="索引 ${index}">
+                    ${escapeHTML(display)}
+                </span>
+            `;
+        }).join("");
+    }
+
+    updateControls() {
+        const selectors = [
+            "[data-play]",
+            "[data-next]",
+            "[data-prev]",
+            "[data-fill-end]",
+            "[data-end]",
+            "[data-reset]",
+            "[data-progress]"
+        ];
+
+        for (const selector of selectors) {
+            this.q(selector).disabled = this.dirty;
+        }
+
+        if (!this.dirty && this.model) {
+            this.q("[data-prev]").disabled = this.position === 0;
+
+            this.q("[data-next]").disabled =
+                this.position === this.model.events.length;
+        }
+    }
+
+    render() {
+        const { dp, events, fillCount } = this.model;
+
+        const n = this.A.length;
+        const m = this.B.length;
+
+        const actualEvent = this.position > 0
+            ? events[this.position - 1]
+            : null;
+
+        let event = actualEvent;
+
+        const filled = Math.min(this.position, fillCount);
+
+        // 點擊已計算格子時，暫時顯示該格的推導。
+        if (this.inspected) {
+            const [i, j] = this.inspected;
+            const same = i > 0 && j > 0 &&
+                this.A[i - 1] === this.B[j - 1];
+
+            event = {
+                type: "fill",
+                i,
+                j,
+                same,
+                value: dp[i][j],
+                inspect: true,
+                sources: i === 0 || j === 0
+                    ? []
+                    : same
+                        ? [[i - 1, j - 1]]
+                        : [[i - 1, j], [i, j - 1]]
+            };
+        }
+
+        // 回溯路徑與已選取的配對
+        const traceEvents = events.slice(
+            fillCount,
+            this.position
+        );
+
+        const path = new Set();
+
+        for (const trace of traceEvents) {
+            path.add(`${trace.i},${trace.j}`);
+
+            if (trace.nextI !== undefined) {
+                path.add(`${trace.nextI},${trace.nextJ}`);
+            }
+        }
+
+        const lastTrace = traceEvents.length > 0
+            ? traceEvents[traceEvents.length - 1]
+            : null;
+
+        const pairs = lastTrace ? lastTrace.pairs : [];
+
+        const matchedCells = new Set(
+            pairs.map(([i, j]) => `${i + 1},${j + 1}`)
+        );
+
+        const selectedA = new Set(pairs.map(pair => pair[0]));
+        const selectedB = new Set(pairs.map(pair => pair[1]));
+
+        this.q("[data-sequence-a]").innerHTML =
+            this.renderTokens(
+                this.A,
+                selectedA,
+                event ? event.i - 1 : -1
+            );
+
+        this.q("[data-sequence-b]").innerHTML =
+            this.renderTokens(
+                this.B,
+                selectedB,
+                event ? event.j - 1 : -1
+            );
+
+        // 建立 DP 表
+        let tableHTML = `
+            <caption>
+                列：A 前綴；欄：B 前綴；數字：LCS 長度
+            </caption>
+            <thead>
+                <tr>
+                    <th scope="col">A / B</th>
+                    <th scope="col">∅</th>
+                    ${this.B.map(element => `
+                        <th scope="col">
+                            ${escapeHTML(element === " " ? "␠" : element)}
+                        </th>
+                    `).join("")}
+                </tr>
+            </thead>
+            <tbody>
+        `;
+
+        for (let i = 0; i <= n; i++) {
+            const rowName = i === 0
+                ? "∅"
+                : this.A[i - 1] === " "
+                    ? "␠"
+                    : this.A[i - 1];
+
+            tableHTML += `
+                <tr>
+                    <th scope="row">${escapeHTML(rowName)}</th>
+            `;
+
+            for (let j = 0; j <= m; j++) {
+                const key = `${i},${j}`;
+
+                const ready =
+                    i === 0 ||
+                    j === 0 ||
+                    (i - 1) * m + j <= filled;
+
+                const classes = [];
+
+                if (!ready) {
+                    classes.push("pending");
+                } else if (i === 0 || j === 0) {
+                    classes.push("base");
+                }
+
+                if (path.has(key)) classes.push("path");
+                if (matchedCells.has(key)) classes.push("match");
+
+                if (
+                    event &&
+                    event.sources &&
+                    event.sources.some(
+                        source => source[0] === i && source[1] === j
+                    )
+                ) {
+                    classes.push("source");
+                }
+
+                if (event && event.i === i && event.j === j) {
+                    classes.push("current");
+                }
+
+                tableHTML += `
+                    <td class="${classes.join(" ")}">
+                        ${ready ? `
+                            <button
+                                data-cell="${key}"
+                                aria-label="檢查 dp[${i}][${j}] = ${dp[i][j]}">
+                                ${dp[i][j]}
+                            </button>
+                        ` : "·"}
+                    </td>
+                `;
+            }
+
+            tableHTML += "</tr>";
+        }
+
+        tableHTML += "</tbody>";
+
+        const scrollArea = this.q(".table-scroll");
+        const oldLeft = scrollArea.scrollLeft;
+        const oldTop = scrollArea.scrollTop;
+
+        this.q("[data-table]").innerHTML = tableHTML;
+
+        scrollArea.scrollLeft = oldLeft;
+        scrollArea.scrollTop = oldTop;
+
+        // 說明面板
+        let phase = "READY / 邊界";
+        let title = "dp[0][0] = 0";
+        let description =
+            "第 0 列與第 0 欄先設為 0。尚未計算的格子以 · 表示。";
+        let calculation = "空序列的 LCS 長度 = 0";
+        let rule = "init";
+
+        if (event) {
+            title = `dp[${event.i}][${event.j}]`;
+
+            if (event.type === "fill") {
+                phase = event.inspect
+                    ? "INSPECT / 檢查格子"
+                    : "FILL / 建立長度表";
+
+                title += ` = ${event.value}`;
+
+                if (event.i === 0 || event.j === 0) {
+                    description =
+                        "其中一個前綴為空，因此這格必定是 0。";
+                    calculation = "邊界 → 0";
+                } else if (event.same) {
+                    rule = "same";
+
+                    description =
+                        `兩個末尾元素都是「${this.A[event.i - 1]}」，` +
+                        "可以接在左上角最佳答案後面。";
+
+                    calculation =
+                        `${dp[event.i - 1][event.j - 1]} + 1` +
+                        ` = ${event.value}`;
+                } else {
+                    rule = "different";
+
+                    description =
+                        `「${this.A[event.i - 1]}」與` +
+                        `「${this.B[event.j - 1]}」不同，` +
+                        "比較跳過 A 末尾和跳過 B 末尾的結果。";
+
+                    calculation =
+                        `max(${dp[event.i - 1][event.j]}, ` +
+                        `${dp[event.i][event.j - 1]}) = ${event.value}`;
+                }
+            }
+
+            if (event.type === "trace") {
+                phase = "TRACE / 從右下角回溯";
+                rule = "trace";
+
+                if (event.same) {
+                    description =
+                        `相同！把「${this.A[event.i - 1]}」` +
+                        "收進倒序答案，往左上走。";
+
+                    calculation =
+                        `(${event.i}, ${event.j}) ↖ ` +
+                        `(${event.nextI}, ${event.nextJ})`;
+                } else {
+                    const prefix = event.tied
+                        ? "上方與左方同值，依平手策略"
+                        : "選擇較大的 DP 值，";
+
+                    description = prefix + (
+                        event.direction === "up"
+                            ? `向上，跳過 A 的「${this.A[event.i - 1]}」。`
+                            : `向左，跳過 B 的「${this.B[event.j - 1]}」。`
+                    );
+
+                    calculation =
+                        `上 ${dp[event.i - 1][event.j]} / ` +
+                        `左 ${dp[event.i][event.j - 1]} → ` +
+                        (event.direction === "up" ? "↑" : "←");
+                }
+            }
+
+            if (event.type === "done") {
+                phase = "DONE / 反轉並輸出";
+                rule = "done";
+                title = `LCS 長度 = ${dp[n][m]}`;
+
+                description =
+                    "已到達邊界。反轉回溯收集的倒序元素，" +
+                    "得到一個最長共同子序列。";
+
+                calculation =
+                    this.formatSequence(event.picked) +
+                    " → reverse → " +
+                    this.formatSequence(event.answer);
+            }
+        }
+
+        this.q("[data-phase]").textContent = phase;
+        this.q("[data-title]").textContent = title;
+        this.q("[data-description]").textContent = description;
+        this.q("[data-calculation]").textContent = calculation;
+
+        for (const line of this.root.querySelectorAll("[data-rule]")) {
+            line.classList.toggle(
+                "active",
+                line.dataset.rule === rule
+            );
+        }
+
+        const done = actualEvent && actualEvent.type === "done";
+
+        this.q("[data-answer-label]").textContent = done
+            ? "最長共同子序列（正序）"
+            : "回溯收集（倒序）";
+
+        this.q("[data-answer]").textContent = done
+            ? this.formatSequence(actualEvent.answer)
+            : actualEvent && actualEvent.type === "trace"
+                ? this.formatSequence(actualEvent.picked)
+                : "尚未回溯";
+
+        this.q("[data-length]").textContent =
+            this.position >= fillCount
+                ? `最長長度：${dp[n][m]} · 填表 ${n * m} 格`
+                : `已填 ${filled} / ${n * m} 格`;
+
+        this.q("[data-progress]").value = this.position;
+
+        this.q("[data-progress-text]").textContent =
+            `${this.position} / ${events.length}`;
+
+        this.updateControls();
+    }
+}
+
+/* =========================
+   建立兩個動畫
+========================= */
+
+const characterLab = new LCSAnimation(
+    "character-lab",
+    "char",
+    "ABCBDAB",
+    "BDCABA"
+);
+
+const wordLab = new LCSAnimation(
+    "word-lab",
+    "word",
+    "we study algorithms every day",
+    "we practice algorithms every week"
+);
+
+/* =========================
+   UVa 531 測資與解析
+========================= */
+
+const SHORT_SAMPLE = `we study algorithms every day
+#
+we practice algorithms every week
+#`;
+
+const OFFICIAL_SAMPLE = `die einkommen der landwirte
+sind fuer die abgeordneten ein buch mit sieben siegeln
+um dem abzuhelfen
+muessen dringend alle subventionsgesetze verbessert werden
+#
+die steuern auf vermoegen und einkommen
+sollten nach meinung der abgeordneten
+nachdruecklich erhoben werden
+dazu muessen die kontrollbefugnisse der finanzbehoerden
+dringend verbessert werden
+#`;
+
+function parseUVAInput(raw) {
+    const texts = [];
+    let words = [];
+
+    for (const line of raw.split(/\r?\n/)) {
+        if (line.trim() === "#") {
+            if (words.length >= 100) {
+                throw new Error("每份文字必須少於 100 個單字。");
+            }
+
+            texts.push(words);
+            words = [];
+            continue;
+        }
+
+        const tokens = line.trim().split(/\s+/).filter(Boolean);
+
+        for (const word of tokens) {
+            if (!/^[a-z]+$/.test(word)) {
+                throw new Error(
+                    "單字需為小寫英文字母；# 必須單獨一行。"
+                );
+            }
+
+            if (word.length >= 30) {
+                throw new Error("每個單字必須少於 30 個字元。");
+            }
+
+            words.push(word);
+        }
+    }
+
+    if (words.length > 0 || texts.length % 2 !== 0) {
+        throw new Error(
+            "輸入不完整：每組測資的兩份文字都要各自以 # 結束。"
+        );
+    }
+
+    if (texts.length === 0) {
+        throw new Error("請輸入至少一組測資。");
+    }
+
+    const cases = [];
+
+    for (let i = 0; i < texts.length; i += 2) {
+        cases.push({
+            A: texts[i],
+            B: texts[i + 1]
+        });
+    }
+
+    return cases;
+}
+
+let uvaCases = [];
+
+function runUVA() {
+    try {
+        const parsed = parseUVAInput($("#uva-input").value);
+
+        uvaCases = parsed.map(testCase => ({
+            ...testCase,
+            result: solveLCS(testCase.A, testCase.B)
+        }));
+
+        $("#uva-error").textContent = "";
+
+        $("#uva-output").textContent =
+            uvaCases
+                .map(testCase => testCase.result.answer.join(" "))
+                .join("\n") + "\n";
+
+        $("#uva-meta").textContent =
+            `${uvaCases.length} 組測資；LCS 長度：` +
+            uvaCases.map(testCase => testCase.result.answer.length)
+                .join("、");
+
+        if (uvaCases.some(testCase => testCase.result.answer.length === 0)) {
+            $("#uva-meta").textContent +=
+                "。含無共同單字的邊界練習，輸出為空行；" +
+                "不屬於官方保證的測資。";
+        }
+
+        $("#case-select").innerHTML =
+            uvaCases.map((testCase, index) => `
+                <option value="${index}">
+                    第 ${index + 1} 組：
+                    ${testCase.A.length} × ${testCase.B.length} 單字
+                </option>
+            `).join("");
+
+        $("#load-word-animation").disabled = false;
+    } catch (error) {
+        uvaCases = [];
+
+        $("#uva-error").textContent = error.message;
+        $("#uva-output").textContent = "請修正输入後重新執行。";
+        $("#uva-meta").textContent = "";
+        $("#case-select").innerHTML = "";
+        $("#load-word-animation").disabled = true;
+    }
+}
+
+$("#uva-input").value = SHORT_SAMPLE;
+
+$("#run-uva").onclick = runUVA;
+
+$("#uva-input").oninput = () => {
+    $("#uva-meta").textContent = "輸入已修改，請重新執行。";
+    $("#load-word-animation").disabled = true;
+};
+
+$("#short-sample").onclick = () => {
+    $("#uva-input").value = SHORT_SAMPLE;
+    runUVA();
+};
+
+$("#official-sample").onclick = () => {
+    $("#uva-input").value = OFFICIAL_SAMPLE;
+    runUVA();
+};
+
+$("#multi-sample").onclick = () => {
+    $("#uva-input").value = SHORT_SAMPLE + `
+a b
+#
+b a
+#`;
+
+    runUVA();
+};
+
+$("#load-word-animation").onclick = () => {
+    const index = Number($("#case-select").value);
+    const testCase = uvaCases[index];
+
+    if (!testCase) return;
+
+    if (testCase.A.length > 32 || testCase.B.length > 32) {
+        $("#uva-error").textContent =
+            "這組測資超過動畫每份 32 個單字的顯示上限，" +
+            "完整答案已顯示於輸出區。";
+        return;
+    }
+
+    $("#uva-error").textContent = "";
+
+    wordLab.load(
+        testCase.A.join(" "),
+        testCase.B.join(" ")
+    );
+
+    $("#word-lab").scrollIntoView({
+        behavior: window.matchMedia(
+            "(prefers-reduced-motion: reduce)"
+        ).matches ? "auto" : "smooth",
+        block: "start"
+    });
+};
+
+runUVA();
+
+/* =========================
+   複雜度計算器
+========================= */
+
+function updateComplexity() {
+    const n = Number($("#size-n").value);
+    const m = Number($("#size-m").value);
+
+    $("#n-value").textContent = n;
+    $("#m-value").textContent = m;
+
+    $("#state-count").textContent = (n * m).toLocaleString();
+
+    $("#memory-size").textContent =
+        ((n + 1) * (m + 1) * 4 / 1024).toLocaleString(
+            undefined,
+            { maximumFractionDigits: 1 }
+        );
+}
+
+$("#size-n").oninput = updateComplexity;
+$("#size-m").oninput = updateComplexity;
+
+updateComplexity();
+
+/* =========================
+   C++17 解答
+========================= */
+
+const CPP_CODE = String.raw`#include <algorithm>
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+
+// 讀到 # 才結束一份文字。
+// 換行只是空白。
+bool readText(vector<string>& text) {
+    text.clear();
+    string word;
+
+    while (cin >> word) {
+        if (word == "#") return true;
+        text.push_back(word);
+    }
+
+    return false; // EOF
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    vector<string> A, B;
+
+    while (readText(A) && readText(B)) {
+        int n = A.size();
+        int m = B.size();
+
+        vector<vector<int>> dp(
+            n + 1,
+            vector<int>(m + 1, 0)
+        );
+
+        // 建立長度表
+        for (int i = 1; i <= n; ++i) {
+            for (int j = 1; j <= m; ++j) {
+                if (A[i - 1] == B[j - 1]) {
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                } else {
+                    dp[i][j] = max(
+                        dp[i - 1][j],
+                        dp[i][j - 1]
+                    );
+                }
+            }
+        }
+
+        // 回溯，取得實際單字
+        vector<string> answer;
+        int i = n;
+        int j = m;
+
+        while (i > 0 && j > 0) {
+            if (A[i - 1] == B[j - 1]) {
+                answer.push_back(A[i - 1]);
+                --i;
+                --j;
+            } else if (dp[i - 1][j] >= dp[i][j - 1]) {
+                --i; // 同值時優先向上
+            } else {
+                --j;
+            }
+        }
+
+        reverse(answer.begin(), answer.end());
+
+        for (size_t k = 0; k < answer.size(); ++k) {
+            if (k) cout << ' ';
+            cout << answer[k];
+        }
+
+        cout << '\n';
+    }
+
+    return 0;
+}`;
+
+/* =========================
+   Python 3 解答
+========================= */
+
+const PYTHON_CODE = String.raw`import sys
+
+
+def lcs_words(a, b):
+    n, m = len(a), len(b)
+
+    dp = [
+        [0] * (m + 1)
+        for _ in range(n + 1)
+    ]
+
+    # 建立長度表
+    for i in range(1, n + 1):
+        for j in range(1, m + 1):
+            if a[i - 1] == b[j - 1]:
+                dp[i][j] = dp[i - 1][j - 1] + 1
+            else:
+                dp[i][j] = max(
+                    dp[i - 1][j],
+                    dp[i][j - 1]
+                )
+
+    # 回溯取得單字
+    answer = []
+    i, j = n, m
+
+    while i > 0 and j > 0:
+        if a[i - 1] == b[j - 1]:
+            answer.append(a[i - 1])
+            i -= 1
+            j -= 1
+        elif dp[i - 1][j] >= dp[i][j - 1]:
+            i -= 1
+        else:
+            j -= 1
+
+    answer.reverse()
+    return answer
+
+
+def main():
+    texts = []
+    current = []
+
+    # 空白與換行皆視為分隔。
+    # 每個 # 結束一份文字。
+    for word in sys.stdin.read().split():
+        if word == '#':
+            texts.append(current)
+            current = []
+        else:
+            current.append(word)
+
+    if current or len(texts) % 2:
+        raise ValueError('Incomplete input: missing #')
+
+    output = []
+
+    for k in range(0, len(texts), 2):
+        answer = lcs_words(texts[k], texts[k + 1])
+        output.append(' '.join(answer))
+
+    if output:
+        sys.stdout.write('\n'.join(output) + '\n')
+
+
+if __name__ == '__main__':
+    main()
+`;
+
+/* =========================
+   程式碼切換、複製、下載
+========================= */
+
+let currentLanguage = "cpp";
+
+function showCode(language) {
+    currentLanguage = language;
+
+    $("#source-code").textContent =
+        language === "cpp" ? CPP_CODE : PYTHON_CODE;
+
+    $("#cpp-tab").setAttribute(
+        "aria-selected",
+        String(language === "cpp")
+    );
+
+    $("#python-tab").setAttribute(
+        "aria-selected",
+        String(language === "python")
+    );
+
+    $("#code-content").setAttribute(
+        "aria-labelledby",
+        language === "cpp" ? "cpp-tab" : "python-tab"
+    );
+
+    $("#copy-status").textContent = "";
+}
+
+$("#cpp-tab").onclick = () => showCode("cpp");
+$("#python-tab").onclick = () => showCode("python");
+
+for (const tab of document.querySelectorAll('[role="tab"]')) {
+    tab.onkeydown = event => {
+        if (
+            event.key === "ArrowLeft" ||
+            event.key === "ArrowRight"
+        ) {
+            event.preventDefault();
+
+            showCode(
+                currentLanguage === "cpp" ? "python" : "cpp"
+            );
+
+            $(
+                currentLanguage === "cpp"
+                    ? "#cpp-tab"
+                    : "#python-tab"
+            ).focus();
+        }
+    };
+}
+
+$("#copy-code").onclick = async () => {
+    const code = currentLanguage === "cpp"
+        ? CPP_CODE
+        : PYTHON_CODE;
+
+    try {
+        await navigator.clipboard.writeText(code);
+        $("#copy-status").textContent = "程式已複製。";
+    } catch {
+        // 本機 file:// 頁面可能不允許使用剪貼簿 API。
+        // 改成選取程式，讓使用者手動複製。
+        const range = document.createRange();
+        range.selectNodeContents($("#source-code"));
+
+        const selection = window.getSelection();
+        selection.removeAllRanges();
+        selection.addRange(range);
+
+        $("#copy-status").textContent =
+            "已選取程式，請按 Ctrl+C；Mac 請按 ⌘C。";
+    }
+};
+
+$("#download-code").onclick = () => {
+    const isCPP = currentLanguage === "cpp";
+
+    const blob = new Blob(
+        [isCPP ? CPP_CODE : PYTHON_CODE],
+        { type: "text/plain;charset=utf-8" }
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = isCPP ? "uva531.cpp" : "uva531.py";
+
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+};
+
+showCode("cpp");
+
+/* =========================
+   觀念練習
+========================= */
+
+const questions = [
+    {
+        question: "A = ABC，B = BAC。LCS 長度是多少？",
+        options: ["1", "2", "3"],
+        answer: 1,
+        explanation:
+            "AC 或 BC 都是共同子序列，長度為 2。" +
+            "ABC 沒有以相同順序出現在 B 中。"
+    },
+    {
+        question: "回溯時，上方與左方 DP 值相同，該怎麼做？",
+        options: [
+            "任選一邊都能保留最優長度",
+            "只能向左",
+            "兩邊元素都加入答案"
+        ],
+        answer: 0,
+        explanation:
+            "兩個子問題的最佳長度相同，可選其一。" +
+            "只有配到相同元素並走左上時，才收集元素。"
+    },
+    {
+        question: "UVa 531 只輸出 dp[n][m]，可以嗎？",
+        options: [
+            "可以，長度就是答案",
+            "不行，題目要求實際單字序列",
+            "可以，只要加換行"
+        ],
+        answer: 1,
+        explanation:
+            "dp[n][m] 只是長度。" +
+            "必須回溯取得單字，反轉後再輸出。"
+    }
+];
+
+$("#quiz").innerHTML = questions.map((question, index) => `
+    <div class="quiz-card">
+        <strong>${index + 1}. ${question.question}</strong>
+
+        <div class="quiz-options">
+            ${question.options.map((option, optionIndex) => `
+                <button class="btn"
+                        data-question="${index}"
+                        data-choice="${optionIndex}">
+                    ${option}
+                </button>
+            `).join("")}
+        </div>
+
+        <div class="feedback"
+             data-feedback="${index}"
+             aria-live="polite"></div>
+    </div>
+`).join("");
+
+for (const button of document.querySelectorAll("[data-question]")) {
+    button.onclick = () => {
+        const questionIndex = Number(button.dataset.question);
+        const choice = Number(button.dataset.choice);
+
+        const question = questions[questionIndex];
+
+        const feedback = document.querySelector(
+            `[data-feedback="${questionIndex}"]`
+        );
+
+        for (const option of document.querySelectorAll(
+            `[data-question="${questionIndex}"]`
+        )) {
+            option.classList.remove("correct");
+        }
+
+        const correct = choice === question.answer;
+
+        button.classList.toggle("correct", correct);
+        feedback.classList.toggle("wrong", !correct);
+
+        feedback.textContent =
+            (correct ? "答對了！" : "再想一下。") +
+            question.explanation;
+    };
+}
+
+/* =========================
+   簡報模式與背景暫停
+========================= */
+
+$("#presentation-button").onclick = () => {
+    const enabled = document.body.classList.toggle("presentation");
+
+    $("#presentation-button").textContent =
+        enabled ? "離開簡報模式" : "簡報模式";
+
+    $("#presentation-button").setAttribute(
+        "aria-pressed",
+        String(enabled)
+    );
+};
+
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        characterLab.pause();
+        wordLab.pause();
+    }
+});
+</script>
+
+</body>
+</html>
